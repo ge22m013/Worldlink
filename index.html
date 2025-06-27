@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worldlink AI Co-Creation | Comprehensive Interactive Proposal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Corporate Blue & Warm Gray -->
+    <!-- Application Structure Plan: The application is structured as a single-page vertical scrolling dashboard with a sticky top navigation for seamless access to all sections. The content is grouped thematically: 1. Strategic Context (Challenges & Imperatives), 2. Our Approach (Sprint, Solution Blueprint, Collaboration, Why Us), 3. Detailed Roadmap, 4. Quantified Impact (ROI), and 5. Next Steps. This structure allows users to explore linearly or jump to specific areas of interest (e.g., ROI directly), enhancing user understanding and ease of navigation compared to a linear slide deck. Interactive elements like accordions for challenges and tabs for the solution blueprint are used to manage content density and encourage exploration. -->
+    <!-- Visualization & Content Choices: - Strategic Imperative: Goal: Inform key drivers. Viz: Grid of icon-based cards. Interaction: None, direct statement. Justification: Clear, concise presentation of high-level points. - Core Customer Experience Challenges: Goal: Inform specific pain points with details. Viz: Accordion/Expandable Cards (HTML/CSS/JS). Interaction: Click to expand/collapse details. Justification: Manages content density, allows users to delve deeper only if interested. - AI Solution Blueprint: Goal: Organize and detail system components. Viz: Tabbed Interface (HTML/CSS/JS). Interaction: Click tabs to switch views of detailed content. Justification: Efficiently presents multiple related concepts without overwhelming the user. - ROI Metrics (Cost, Time, Churn, CSAT): Goal: Compare 'before' and 'after' states, show proportion. Viz: Interactive Bar Charts & Doughnut Chart (Chart.js/Canvas). Interaction: Tooltips on hover show precise values and percentage change. Justification: Bar charts for direct comparison, Doughnut for proportion. Interactivity makes them engaging and data-rich. - Phased Roadmap: Goal: Show a process over time. Viz: Horizontal Timeline (HTML/CSS/Tailwind + JS). Interaction: Clicking a phase highlights it and reveals detailed text below. Justification: Intuitive for processes, interactive to manage information layers. - Collaborative Model & Why Partner: Goal: Inform value proposition. Viz: Bulleted lists within cards. Interaction: None, direct consumption. Justification: Clear, concise value statements. - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #3b82f6; /* blue-500 */
+            border-radius: 8px 0 0 8px;
+        }
+        /* Stat card hover effect */
+        .stat-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .roadmap-item.active-phase {
+            border-color: #3b82f6; /* blue-500 */
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .roadmap-line {
+            height: 2px;
+            background-color: #cbd5e1; /* slate-300 */
+        }
+        .accordion-header {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .accordion-header:hover {
+            background-color: #e2e8f0; /* slate-200 */
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+        .accordion-item.active .accordion-content {
+            max-height: 300px; /* Adjust as needed for content */
+        }
+        .tab-button.active {
+            @apply bg-blue-600 text-white shadow-md;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Hero Section Background Glow Animation */
+        @keyframes hero-glow {
+            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(59, 130, 246, 0.7); }
+            100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+        }
+        .hero-glow-bg {
+            animation: hero-glow 4s infinite alternate;
+        }
+
+        /* Scroll-triggered animation */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* CTA button pulse animation */
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+        .cta-pulse-button {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-blue-600">
+                Worldlink<span class="font-light text-slate-700"> AI Initiative</span>
+            </h1>
+            <div class="hidden md:flex space-x-6 lg:space-x-8 items-center text-sm font-medium">
+                <a href="#strategic-context" class="text-slate-600 hover:text-blue-600 transition">Strategic Context</a>
+                <a href="#our-approach" class="text-slate-600 hover:text-blue-600 transition">Our Approach</a>
+                <a href="#roadmap" class="text-slate-600 hover:text-blue-600 transition">The Roadmap</a>
+                <a href="#impact" class="text-slate-600 hover:text-blue-600 transition">The Impact (ROI)</a>
+                <a href="#next-steps" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition shadow-sm">Next Steps</a>
+            </div>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-slate-700 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-4 border-t border-slate-200">
+            <a href="#strategic-context" class="block py-2 text-slate-600 hover:text-blue-600">Strategic Context</a>
+            <a href="#our-approach" class="block py-2 text-slate-600 hover:text-blue-600">Our Approach</a>
+            <a href="#roadmap" class="block py-2 text-slate-600 hover:text-blue-600">The Roadmap</a>
+            <a href="#impact" class="block py-2 text-slate-600 hover:text-blue-600">The Impact (ROI)</a>
+            <a href="#next-steps" class="block mt-2 bg-blue-600 text-white px-4 py-2 rounded-full text-center">Next Steps</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-16">
+        <!-- Hero Section -->
+        <section class="text-center mb-24 relative p-8 rounded-xl hero-glow-bg">
+            <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight">
+                Your Strategic AI Transformation
+                <span class="text-blue-600">Starts Here.</span>
+            </h2>
+            <p class="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-slate-600">
+                We propose a collaborative partnership to build a custom, multilingual Generative AI solution that will revolutionize your customer experience and drive unparalleled operational efficiency.
+            </p>
+        </section>
+
+        <!-- Strategic Context: Challenges & Imperatives -->
+        <section id="strategic-context" class="mb-24 scroll-mt-20 animate-on-scroll">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold">The Strategic Imperative & Core Challenges</h3>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">Understanding why AI is critical for Worldlink's market leadership and addressing key customer experience hurdles.</p>
+            </div>
+
+            <!-- Strategic Imperative -->
+            <div class="mb-16">
+                <h4 class="text-2xl md:text-3xl font-bold text-center mb-8 text-slate-700">Why AI is Critical, Now</h4>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-lg relative stat-card">
+                        <h5 class="text-xl font-bold mb-2">Market Trends</h5>
+                        <p class="text-slate-600">Global competitors are redefining customer experience and operational efficiency with AI, setting new benchmarks.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg relative stat-card">
+                        <h5 class="text-xl font-bold mb-2">Competitive Landscape</h5>
+                        <p class="text-slate-600">Proactive AI strategy is essential to maintain market leadership against new international players.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg relative stat-card">
+                        <h5 class="text-xl font-bold mb-2">Internal Challenges</h5>
+                        <p class="text-slate-600">High operational costs and limited scalability due to reliance on traditional methods.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg relative stat-card lg:col-span-3 mx-auto max-w-xl">
+                        <h5 class="text-xl font-bold mb-2">Opportunity for Differentiation</h5>
+                        <p class="text-slate-600">AI allows Worldlink to pioneer inclusive digital services, reaching underserved rural and Tier-2/3 markets.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core Customer Experience Challenges -->
+            <div>
+                <h4 class="text-2xl md:text-3xl font-bold text-center mb-8 text-slate-700">Worldlink's Core Customer Experience Challenges</h4>
+                <div class="space-y-4 max-w-3xl mx-auto">
+                    <div class="accordion-item bg-white rounded-lg shadow-lg overflow-hidden border border-slate-200">
+                        <div class="accordion-header p-5 flex justify-between items-center text-lg font-semibold">
+                            High Cost of Human Agents
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </div>
+                        <div class="accordion-content p-5 pt-0 text-slate-600">
+                            <p>Operating a large, human-based call center is a major operational expenditure. Training, salaries, and infrastructure for agents contribute to escalating support costs, impacting profitability and scalability.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-white rounded-lg shadow-lg overflow-hidden border border-slate-200">
+                        <div class="accordion-header p-5 flex justify-between items-center text-lg font-semibold">
+                            Delays in First Call Resolution (FCR) & Long Wait Times
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </div>
+                        <div class="accordion-content p-5 pt-0 text-slate-600">
+                            <p>Customers often experience frustratingly long wait times, particularly during peak hours, leading to dissatisfaction. Complex or repetitive Tier-1 queries frequently require multiple transfers or callbacks, extending resolution times.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-white rounded-lg shadow-lg overflow-hidden border border-slate-200">
+                        <div class="accordion-header p-5 flex justify-between items-center text-lg font-semibold">
+                            Limited Multilingual and Vernacular Access
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </div>
+                        <div class="accordion-content p-5 pt-0 text-slate-600">
+                            <p>Despite Nepal's rich linguistic diversity, digital support is often limited to English and basic Nepali, alienating a significant portion of the customer base. This hinders broader market penetration and inclusive digital service delivery.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-white rounded-lg shadow-lg overflow-hidden border border-slate-200">
+                        <div class="accordion-header p-5 flex justify-between items-center text-lg font-semibold">
+                            Service Inconsistency and Quality Variation
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </div>
+                        <div class="accordion-content p-5 pt-0 text-slate-600">
+                            <p>Reliance on individual human agents can lead to variability in service quality, tone, and the accuracy of information provided. Maintaining consistent service standards across a large human team presents a continuous operational challenge.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Approach: Sprint, Solution, Collaboration, Why Us -->
+        <section id="our-approach" class="mb-24 scroll-mt-20 animate-on-scroll">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold">Our Solution & Partnership</h3>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">Our unique approach and collaborative model ensure your AI success.</p>
+            </div>
+
+            <!-- The Worldlink AI Co-Creation Sprint -->
+            <div class="bg-white p-8 rounded-lg shadow-xl mb-16">
+                <h4 class="text-2xl font-bold text-center mb-6">The Worldlink AI Co-Creation Sprint</h4>
+                <p class="text-center max-w-2xl mx-auto text-slate-600 mb-8">
+                    We propose a transformative shift from traditional, lengthy AI implementation to a rapid, results-driven approach. Our Sprint ignites your AI journey, providing immediate clarity, tangible functionality, and robust momentum.
+                </p>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="p-4 bg-blue-50 rounded-lg">
+                        <h5 class="font-bold text-blue-700 mb-2">🚀 Rapid Co-Design & Prototyping</h5>
+                        <p class="text-sm text-slate-600">Condenses months of design into 1-5 days. Focuses on quickly bringing core AI functionalities to life for immediate testing and refinement.</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded-lg">
+                        <h5 class="font-bold text-blue-700 mb-2">💡 Deep Dive & Tailored Solutioning</h5>
+                        <p class="text-sm text-slate-600">Your experts work directly with ours to design, configure, and train bespoke AI models using your data, tailored to your unique challenges.</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded-lg">
+                        <h5 class="font-bold text-blue-700 mb-2">✅ Tangible Validation & Accelerated Momentum</h5>
+                        <p class="text-sm text-slate-600">Delivers a functional Proof of Concept (POC) that directly addresses a key challenge, accelerating the path to full-scale development.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Solution Blueprint -->
+            <div class="bg-white p-8 rounded-lg shadow-xl mb-16">
+                <h4 class="text-2xl font-bold text-center mb-8">AI Solution Blueprint: Multilingual Generative AI</h4>
+                <p class="text-center max-w-2xl mx-auto text-slate-600 mb-8">
+                    Our comprehensive AI solution is meticulously designed to transform Worldlink's customer experience and operational efficiency, leveraging cutting-edge Generative AI tailored for the Nepali context.
+                </p>
+                <div class="flex border-b border-slate-200 mb-6">
+                    <button class="tab-button active flex-1 p-4 text-lg font-semibold border-b-2 border-transparent transition duration-300 hover:text-blue-600" data-tab="text-ai">Text AI Assistant</button>
+                    <button class="tab-button flex-1 p-4 text-lg font-semibold border-b-2 border-transparent transition duration-300 hover:text-blue-600" data-tab="voice-ai">Voice AI Interaction</button>
+                    <button class="tab-button flex-1 p-4 text-lg font-semibold border-b-2 border-transparent transition duration-300 hover:text-blue-600" data-tab="predictive-ai">Predictive Intelligence</button>
+                </div>
+
+                <div id="text-ai" class="tab-content active p-4">
+                    <h5 class="text-xl font-bold mb-2 text-blue-600">Intelligent Text-Based AI Assistant</h5>
+                    <ul class="list-disc list-inside text-slate-600 space-y-2">
+                        <li>**Core Functionality:** Sophisticated chatbot for Tier-1 queries (troubleshooting, account info, updates).</li>
+                        <li>**Multilingual Mastery:** Native support for English, Nepali, Newari, Maithili, Bhojpuri for inclusive communication.</li>
+                        <li>**Advanced Contextual Understanding:** Grasping nuances of intent and emotion for relevant, empathetic responses.</li>
+                    </ul>
+                </div>
+                <div id="voice-ai" class="tab-content p-4">
+                    <h5 class="text-xl font-bold mb-2 text-blue-600">Seamless Voice-Enabled Customer Interaction</h5>
+                    <ul class="list-disc list-inside text-slate-600 space-y-2">
+                        <li>**Natural Language Voice Bot:** Intuitive voice assistant for automated call center support (balance checks, renewals, complaints).</li>
+                        <li>**Fluid Conversational Flow:** Designed for natural, human-like conversations, minimizing frustration.</li>
+                        <li>**Intelligent Call Routing:** Seamless hand-off to human agents with complete interaction summary when needed.</li>
+                    </ul>
+                </div>
+                <div id="predictive-ai" class="tab-content p-4">
+                    <h5 class="text-xl font-bold mb-2 text-blue-600">Adaptive Learning & Predictive Intelligence</h5>
+                    <ul class="list-disc list-inside text-slate-600 space-y-2">
+                        <li>**Continuous Improvement:** Robust learning framework refining understanding and responses based on real-time interactions.</li>
+                        <li>**Proactive Engagement:** Identify potential issues (network, at-risk customers) and initiate proactive support.</li>
+                        <li>**Data-Driven Optimization:** Generate actionable business intelligence for service optimization and new growth opportunities.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Our Collaborative Model -->
+            <div class="bg-white p-8 rounded-lg shadow-xl mb-16">
+                <h4 class="text-2xl font-bold text-center mb-8">Our Collaborative Model: Hands-On Co-Creation for Success</h4>
+                <p class="text-center max-w-2xl mx-auto text-slate-600 mb-8">
+                    We believe in empowering your team, not just deploying technology. Our model is built on true partnership.
+                </p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <h5 class="font-bold text-blue-700 mb-2">🤝 Joint Effort & Shared Objectives</h5>
+                        <p class="text-sm text-slate-600">Your domain expertise combined with our AI capabilities drives the most effective solutions, aligning our goals directly with your business outcomes.</p>
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <h5 class="font-bold text-blue-700 mb-2">🧠 Knowledge Transfer & Agile Iteration</h5>
+                        <p class="text-sm text-slate-600">Our approach upskills your team for internal AI management, ensuring continuous feedback and iterative development for evolving needs.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why Partner with Our Expertise? -->
+            <div class="bg-white p-8 rounded-lg shadow-xl">
+                <h4 class="text-2xl font-bold text-center mb-8">Why Partner with Our Expertise?</h4>
+                <ul class="list-disc list-inside text-slate-600 space-y-3 max-w-3xl mx-auto">
+                    <li>**Proven AI Expertise:** Deep knowledge in Generative AI, Natural Language Processing (NLP), and large-scale system integration.</li>
+                    <li>**Specialized Multilingual Capabilities:** Our unique strength in local language processing ensures your AI truly serves Nepal's diverse population.</li>
+                    <li>**Rapid Deployment Methodology:** The AI Co-Creation Sprint is a testament to our ability to deliver tangible progress and validate concepts at unprecedented speed.</li>
+                    <li>**Strategic Vision:** Beyond current challenges, we help Worldlink identify and unlock future monetization and competitive advantages through AI.</li>
+                    <li>**Tailored Solutions, Not Off-the-Shelf:** We build bespoke AI systems that integrate seamlessly with your existing infrastructure and business processes.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- The Roadmap -->
+        <section id="roadmap" class="mb-24 scroll-mt-20 animate-on-scroll">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold">From Sprint to Full Impact</h3>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">A phased roadmap ensuring sustainable AI deployment and maximum value.</p>
+            </div>
+            <div class="relative">
+                <div class="roadmap-line absolute top-1/2 left-0 w-full -translate-y-1/2"></div>
+                <div id="roadmap-container" class="relative grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <!-- Phases will be injected here by JS -->
+                </div>
+            </div>
+            <div id="roadmap-details" class="mt-8 bg-white p-6 rounded-lg shadow-lg min-h-[150px]">
+                <!-- Details will be injected here by JS -->
+            </div>
+        </section>
+
+        <!-- The Impact (ROI) -->
+        <section id="impact" class="mb-24 scroll-mt-20 animate-on-scroll">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold">The Impact: A Clear ROI</h3>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">Visualizing the tangible benefits and measurable return on your AI investment.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="bg-white p-6 rounded-lg shadow-xl">
+                    <h4 class="text-xl font-bold mb-4 text-center">Monthly Support Cost</h4>
+                    <p class="text-center text-sm text-slate-500 mb-4">Projected 35% reduction in operational expenditure.</p>
+                    <div class="chart-container">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-xl">
+                    <h4 class="text-xl font-bold mb-4 text-center">Avg. Resolution Time</h4>
+                    <p class="text-center text-sm text-slate-500 mb-4">Projected 70% reduction, from 2.5 hours to 45 minutes.</p>
+                    <div class="chart-container">
+                        <canvas id="timeChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-xl">
+                    <h4 class="text-xl font-bold mb-4 text-center">Customer Churn Rate</h4>
+                    <p class="text-center text-sm text-slate-500 mb-4">Projected 8% reduction (from 18% to 10%).</p>
+                    <div class="chart-container">
+                        <canvas id="churnChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-xl">
+                    <h4 class="text-xl font-bold mb-4 text-center">Customer Satisfaction (CSAT)</h4>
+                     <p class="text-center text-sm text-slate-500 mb-4">Projected 20% improvement.</p>
+                     <div class="chart-container">
+                        <canvas id="csatChart"></canvas>
+                    </div>
+                </div>
+                <div class="md:col-span-2 bg-white p-6 rounded-lg shadow-xl text-center">
+                    <h4 class="text-xl font-bold mb-4">Rural Market Acquisition & New Revenue Channels</h4>
+                    <p class="text-slate-600">
+                        AI-powered vernacular interfaces will break down language barriers, enabling significant expansion into underserved markets.
+                        Simultaneously, AI-driven analytics, personalized offers, and smart self-service will create entirely new monetization streams for Worldlink.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Next Steps / CTA -->
+        <section id="next-steps" class="text-center bg-blue-600 text-white p-12 rounded-lg scroll-mt-20 animate-on-scroll">
+            <h3 class="text-3xl md:text-4xl font-bold">Let's Build the Future, Together.</h3>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-blue-100 mb-8">
+                Ready to accelerate your AI journey and redefine customer experience? Here's how we ignite your transformation:
+            </p>
+            <div class="grid md:grid-cols-3 gap-8 mb-8 text-blue-100">
+                <div>
+                    <h5 class="font-bold text-xl mb-2">📅 Schedule Your AI Co-Creation Sprint</h5>
+                    <p class="text-sm">Let's set a date for an intensive 1-5 day session to co-design and validate your custom AI solution.</p>
+                </div>
+                <div>
+                    <h5 class="font-bold text-xl mb-2">📊 Prepare Anonymized Data</h5>
+                    <p class="text-sm">Access to relevant, anonymized customer service data is crucial for delivering immediate, localized insights during our Sprint.</p>
+                </div>
+                <div>
+                    <h5 class="font-bold text-xl mb-2">🎯 Define Core Use Cases</h5>
+                    <p class="text-sm">Identify the top 1-2 customer service challenges you want to address first during the Sprint for maximum impact.</p>
+                </div>
+            </div>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-blue-100">
+                **Target:** Conclude AI Co-Creation Sprint and Validate Initial Solution Design by **[Insert Near Date, e.g., end of July 2025]**.
+            </p>
+            <button class="mt-8 bg-white text-blue-600 font-bold px-8 py-3 rounded-full hover:bg-blue-50 transition shadow-lg text-lg cta-pulse-button">
+                Initiate Partnership
+            </button>
+        </section>
+    </main>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Roadmap Data and Interaction
+        const roadmapData = [
+            {
+                phase: 1,
+                title: "AI Co-Creation Sprint",
+                duration: "1-5 Days",
+                focus: "Intensive, hands-on collaboration to identify key pain points, co-design a tailored AI solution, and rapidly prototype core logic and capabilities of the Multilingual AI Assistant.",
+                outcome: "A validated solution design, initial proof of concept for critical AI capabilities, and a detailed implementation plan for subsequent customized solution development.",
+            },
+            {
+                phase: 2,
+                title: "Text AI Full Deployment",
+                duration: "Target: 3 Months",
+                focus: "Scaling the text-based multilingual chatbot to handle high volumes, integrating with core systems, and refining deep linguistic support for English, Nepali, and key regional languages.",
+                outcome: "A fully operational text-based AI Assistant automating 60-70% of Tier-1 textual inquiries, significantly reducing operational costs.",
+            },
+            {
+                phase: 3,
+                title: "Voice AI Integration",
+                duration: "Target: 6-9 Months",
+                focus: "Developing and seamlessly integrating the Natural Language Voice Bot into call center operations with refined conversational flows and intelligent hand-off protocols.",
+                outcome: "A comprehensive voice-enabled AI solution achieving over 90% accuracy for common voice-based inquiries, further accelerating First Call Resolution (FCR).",
+            },
+            {
+                phase: 4,
+                title: "Full Ecosystem & Predictive AI",
+                duration: "Target: 12+ Months",
+                focus: "Extending AI capabilities across all customer touchpoints, developing advanced predictive intelligence for churn prevention, and introducing new AI-led value-added services.",
+                outcome: "A holistic, intelligent AI-driven customer experience platform that delivers sustained operational excellence and new monetization opportunities.",
+            }
+        ];
+
+        const roadmapContainer = document.getElementById('roadmap-container');
+        const roadmapDetails = document.getElementById('roadmap-details');
+
+        function displayRoadmapDetails(phase) {
+            const phaseData = roadmapData.find(p => p.phase === phase);
+            roadmapDetails.innerHTML = `
+                <h4 class="text-xl font-bold text-blue-600 mb-2">Phase ${phaseData.phase}: ${phaseData.title} (${phaseData.duration})</h4>
+                <p class="font-semibold mb-1">Focus:</p>
+                <p class="text-slate-600 mb-3">${phaseData.focus}</p>
+                <p class="font-semibold mb-1">Outcome:</p>
+                <p class="text-slate-600">${phaseData.outcome}</p>
+            `;
+            
+            document.querySelectorAll('.roadmap-item').forEach(item => {
+                item.classList.remove('active-phase');
+                if (parseInt(item.dataset.phase) === phase) {
+                    item.classList.add('active-phase');
+                }
+            });
+        }
+
+        roadmapData.forEach(phase => {
+            const item = document.createElement('div');
+            item.className = 'roadmap-item bg-white p-4 rounded-lg shadow-md text-center cursor-pointer transition-all duration-300 border-2 border-transparent';
+            item.dataset.phase = phase.phase;
+            item.innerHTML = `
+                <div class="text-blue-600 font-bold text-lg">Phase ${phase.phase}</div>
+                <div class="font-semibold text-slate-800">${phase.title}</div>
+                <div class="text-sm text-slate-500">${phase.duration}</div>
+            `;
+            item.addEventListener('click', () => displayRoadmapDetails(phase.phase));
+            roadmapContainer.appendChild(item);
+        });
+
+        // Initialize with Phase 1 details
+        displayRoadmapDetails(1);
+
+        // Accordion functionality for challenges
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.closest('.accordion-item');
+                const content = header.nextElementSibling;
+                const icon = header.querySelector('span');
+
+                if (item.classList.contains('active')) {
+                    item.classList.remove('active');
+                    content.style.maxHeight = 0;
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    document.querySelectorAll('.accordion-item.active').forEach(activeItem => {
+                        activeItem.classList.remove('active');
+                        activeItem.querySelector('.accordion-content').style.maxHeight = 0;
+                        activeItem.querySelector('.accordion-header span').style.transform = 'rotate(0deg)';
+                    });
+                    item.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+
+        // Tab functionality for AI Solution Blueprint
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Deactivate all buttons and hide all content
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+                // Activate clicked button and show corresponding content
+                button.classList.add('active');
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Chart.js Implementation
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    backgroundColor: '#1e293b', // slate-800
+                    titleFont: { size: 14, weight: 'bold' },
+                    bodyFont: { size: 12 },
+                    padding: 12,
+                    cornerRadius: 8,
+                    displayColors: false,
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#e2e8f0' // slate-200
+                    },
+                    ticks: {
+                       color: '#64748b' // slate-500
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                       color: '#334155' // slate-700
+                    }
+                }
+            }
+        };
+
+        // Cost Chart
+        new Chart(document.getElementById('costChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Current', 'Projected'],
+                datasets: [{
+                    label: 'Monthly Cost (NPR)',
+                    data: [15000000, 9750000],
+                    backgroundColor: ['#94a3b8', '#3b82f6'],
+                    borderColor: ['#94a3b8', '#3b82f6'],
+                    borderWidth: 1,
+                    borderRadius: 5,
+                }]
+            },
+            options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, ticks: { ...chartOptions.scales.y.ticks, callback: (value) => `NPR ${value/1000000}M` }}}}
+        });
+
+        // Time Chart
+        new Chart(document.getElementById('timeChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Current', 'Projected'],
+                datasets: [{
+                    label: 'Avg. Resolution Time (hours)',
+                    data: [2.5, 0.75],
+                    backgroundColor: ['#94a3b8', '#3b82f6'],
+                    borderColor: ['#94a3b8', '#3b82f6'],
+                    borderWidth: 1,
+                    borderRadius: 5,
+                }]
+            },
+            options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, ticks: { ...chartOptions.scales.y.ticks, callback: (value) => `${value} hrs` }}}}
+        });
+
+        // Churn Chart
+        new Chart(document.getElementById('churnChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Current', 'Projected'],
+                datasets: [{
+                    label: 'Annual Churn Rate (%)',
+                    data: [18, 10],
+                    backgroundColor: ['#94a3b8', '#3b82f6'],
+                    borderColor: ['#94a3b8', '#3b82f6'],
+                    borderWidth: 1,
+                    borderRadius: 5,
+                }]
+            },
+            options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y.ticks, callback: (value) => `${value}%` }}}}
+        });
+        
+        // CSAT Chart
+        new Chart(document.getElementById('csatChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Improved CSAT', 'Current CSAT'],
+                datasets: [{
+                    label: 'Customer Satisfaction',
+                    data: [20, 80],
+                    backgroundColor: ['#3b82f6', '#e2e8f0'],
+                    borderColor: '#ffffff',
+                    borderWidth: 4,
+                    hoverOffset: 4,
+                }]
+            },
+            options: { 
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                       ...chartOptions.plugins.tooltip,
+                       callbacks: {
+                           label: (context) => ` ${context.label}: ${context.raw}%`
+                       }
+                    }
+                }
+            }
+        });
+
+        // Intersection Observer for scroll animations
+        const animateOnScrollElements = document.querySelectorAll('.animate-on-scroll');
+        const observerOptions = {
+            root: null, /* viewport */
+            rootMargin: '0px',
+            threshold: 0.2 /* 20% of element visible to trigger */
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); /* Stop observing once visible */
+                }
+            });
+        }, observerOptions);
+
+        animateOnScrollElements.forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>
